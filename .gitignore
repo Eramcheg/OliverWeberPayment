@@ -1,1 +1,4 @@
-static/keys/*
+#GitIgnore
+
+static/keys/
+Shoppeyment/.env
