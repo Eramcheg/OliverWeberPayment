@@ -1,4 +1,5 @@
 #GitIgnore
 
-static/keys/
-Shoppeyment/.env
+WestaPay/static/keys/
+
+ShopPayment/.env
