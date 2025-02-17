@@ -203,7 +203,7 @@ def stripe_config(request):
 @csrf_exempt
 def create_checkout_session(request):
     if request.method == 'POST':
-        domain_url = 'https://www.agentsoliverweber.com/'
+        domain_url = 'https://oliverweberpay.pythonanywhere.com/'
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             # Parse the JSON object from the request body
