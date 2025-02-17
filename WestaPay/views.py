@@ -21,7 +21,6 @@ from django.views.decorators.csrf import csrf_exempt
 import stripe
 import firebase_admin
 from firebase_admin import credentials, firestore
-from openpyxl import load_workbook
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
