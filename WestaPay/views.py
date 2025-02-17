@@ -8,6 +8,8 @@ from subprocess import run
 from io import BytesIO
 import urllib.request
 import ftplib
+
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.views.generic import TemplateView
 # Django imports
 from django.conf import settings
@@ -302,6 +304,7 @@ def stripe_webhook(request):
             if user_email:
                 print(user_email)
                 doc_ref.update({"Email": user_email})
+                send_payment_confirmation(user_email, order_id, user_name if user_name else 'Customer')
             if user_phone:
                 doc_ref.update({"Phone": user_phone})
             if user_name:
@@ -471,3 +474,15 @@ def get_check_id():
     transaction = db.transaction()
     new_check_id = increment_check_id(transaction, check_counter_ref)
     return new_check_id
+
+def send_payment_confirmation(email, order_id, name):
+    subject = 'Il tuo ordine è stato pagato!'
+    text_content = f'Grazie, {name}, per il tuo ordine!\nEcco la sua ricevuta: https://oliverweberpay.pythonanywhere.com/{order_id}/'
+    html_content = f'''
+        <p>Grazie, {name}, per il tuo ordine!</p>
+        <p>Ecco la sua <a href="https://oliverweberpay.pythonanywhere.com/{order_id}/">ricevuta</a>.</p>
+    '''
+    from_email = f"OliverWeberShop <{settings.EMAIL_HOST_USER}>"
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [email, 'oliverweberpay@gmail.com'])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
