@@ -330,10 +330,11 @@ def some_view(request, key):
             'Email': doc_data.get('Email', ''),
             'Phone': doc_data.get('Phone', ''),
             'Date': doc_data.get('date', ''),
-            'price':doc_data.get('price', ''),
+            'price':float(doc_data.get('price', 0)),
             'Status':doc_data.get('Status', ''),
             'orders':[],
             'checkId': doc_data.get('checkId', ''),
+            'list': doc_data.get('list', []),
             'Id':doc_data.get('orderId', ''),
         }
 
@@ -362,13 +363,10 @@ def some_view(request, key):
         phone_or_email = product_info['Email']
     else:
         phone_or_email = product_info["Phone"]
-    print(product_info['Date'])
-    date = product_info['Date']
-    date = str(date)
-# Handle the UTC offset format
-  #  date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f%z")
- #   date = date.strftime("%d.%m.%Y %H:%M")
-#    date = str(date)
+
+    date_str = str(product_info['Date'])
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f%z")
+    date = date_obj.strftime("%d.%m.%Y %H:%M")
 
     price = product_info['price']
     checkId = product_info['checkId']
@@ -384,17 +382,17 @@ def some_view(request, key):
     products = []
     for order in product_info['orders']:
         product_entry = [
-            order['name'],
-            str(order['quantity']),
-            "€" + order['price'],
-            order['vat'],
-            "€" + order['totale']
+            order.get('name', ''),
+            order.get('quantity', 0),
+            f"€{order.get('price', 0)}",
+            order.get('vat', 0),
+            f"€{order.get('totale', 0)}"
         ]
         products.append(product_entry)
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f"attachment; filename=receipt_{product_info['Id']}"
+    response['Content-Disposition'] = f"attachment; filename=receipt_{product_info['Id']}.pdf"
 
     buffer = BytesIO()
 
@@ -408,7 +406,7 @@ def some_view(request, key):
     doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=20, topMargin=20)
     content = []
 
-        # Translate LaTeX content to ReportLab elements
+    # Translate LaTeX content to ReportLab elements
     content.append(Paragraph("OLIVER WEBER ITALY S.R.L.", title_style))
     content.append(Paragraph("BOLZANO (BZ)", center_bold_style))
     content.append(Paragraph("VIA DEI CAPPUCCINI 8 CAP 39100", center_bold_style))
@@ -453,7 +451,7 @@ def some_view(request, key):
 
     doc.build(content)
 
-        # Get the value of the BytesIO buffer and write it to the response.
+    # Get the value of the BytesIO buffer and write it to the response.
     pdf = buffer.getvalue()
     buffer.close()
     response.write(pdf)
