@@ -306,7 +306,7 @@ def stripe_webhook(request):
                 doc_ref.update({"Phone": user_phone})
             if user_name:
                 doc_ref.update({"Name": user_name})
-            doc_ref.update({"Status": "Paid"})
+            doc_ref.update({"Status": "Paid", "checkId": get_check_id()})
             print(f"Order {order_id} has been marked as paid.")
 
     return HttpResponse(status=200)
