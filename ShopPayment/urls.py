@@ -20,6 +20,7 @@ from WestaPay import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('update_email/', views.update_email, name='update_email'),
     path('product-info-email/<str:key>/', views.get_email_product_info, name='product_info_email'),
     path('product-info/<str:key>/', views.get_product_info, name='product_info'),
     path('config/', views.stripe_config),  # new
