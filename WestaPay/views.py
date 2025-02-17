@@ -30,7 +30,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-json_file_path = os.path.join(settings.BASE_DIR, "users", "static", "keys", "key5.json")
+json_file_path = os.path.join(settings.BASE_DIR, "WestaPay", "static", "keys", "key5.json")
 
 cred = credentials.Certificate(json_file_path)
 if not firebase_admin._apps:
