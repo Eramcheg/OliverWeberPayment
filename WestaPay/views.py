@@ -333,7 +333,7 @@ def some_view(request, key):
             'price':doc_data.get('price', ''),
             'Status':doc_data.get('Status', ''),
             'orders':[],
-            'checkid': doc_data.get('checkId', ''),
+            'checkId': doc_data.get('checkId', ''),
             'Id':doc_data.get('orderId', ''),
         }
 
