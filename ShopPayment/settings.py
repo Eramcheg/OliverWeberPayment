@@ -11,11 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+dotenv_path = BASE_DIR / 'ShopPayment/.env'
 
+load_dotenv(dotenv_path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -27,9 +29,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51NuuylF8QvBRT2VQEYpV1Am31KeF109saKphKpoVbvLKZ3sdgHV7sqxh3buC2GGb9ApbJeQ4SNgZRS01WMCV7JX300nOpxMi6Y'
-STRIPE_SECRET_KEY = 'sk_test_51NuuylF8QvBRT2VQwtnCRdjAGeM7e5KdYwjHePvGgYdxP58a4ATK8fZf0fCZ04dkNmLSMFrQ8k2y0Qshyi3UNfBr00zjt0xdL3'
-STRIPE_ENDPOINT_SECRET = 'whsec_a8cabc3d674df12b3b60984ed97eb0ea640386bfe1d5e4b4c780b6d073b71b99'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_ENDPOINT_SECRET = os.getenv('STRIPE_ENDPOINT_SECRET')
 # Application definition
 
 INSTALLED_APPS = [
