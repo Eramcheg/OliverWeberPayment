@@ -480,7 +480,7 @@ def send_payment_confirmation(email, order_id, name):
     # Письмо для пользователя
     subject_user = 'Thank You for Your Order with Oliver Weber!'
     text_content_user = (
-        f'Dear Customer,\n'
+        f'Dear {name},\n'
         f'Thank you for your purchase at Oliver Weber! We’re thrilled to have you as our customer.\n'
         f'Your order has been successfully processed, and your receipt you can download here: https://oliverweberpay.pythonanywhere.com/{order_id}/ \n'
         f'Thank you for choosing Oliver Weber. We look forward to seeing you again!\n'
