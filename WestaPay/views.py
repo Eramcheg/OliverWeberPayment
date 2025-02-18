@@ -165,6 +165,7 @@ def update_email(request):
 
             # Update the 'email' field in the document
             document_ref.update({'Email': email})
+            send_payment_confirmation(email, order_id,   'Customer')
 
             # Redirect to success.html after updating
             return render(request, 'success.html')
@@ -476,13 +477,38 @@ def get_check_id():
     return new_check_id
 
 def send_payment_confirmation(email, order_id, name):
-    subject = 'Il tuo ordine è stato pagato!'
-    text_content = f'Grazie, {name}, per il tuo ordine!\nEcco la sua ricevuta: https://oliverweberpay.pythonanywhere.com/{order_id}/'
-    html_content = f'''
-        <p>Grazie, {name}, per il tuo ordine!</p>
-        <p>Ecco la sua <a href="https://oliverweberpay.pythonanywhere.com/{order_id}/">ricevuta</a>.</p>
+    # Письмо для пользователя
+    subject_user = 'Thank You for Your Order with Oliver Weber!'
+    text_content_user = (
+        f'Dear Customer,\n'
+        f'Thank you for your purchase at Oliver Weber! We’re thrilled to have you as our customer.\n'
+        f'Your order has been successfully processed, and your receipt you can download here: https://oliverweberpay.pythonanywhere.com/{order_id}/ \n'
+        f'Thank you for choosing Oliver Weber. We look forward to seeing you again!\n'
+        f'Best regards,\n'
+        f'The Oliver Weber Team'
+    )
+    html_content_user = f'''
+        <p>Dear {name},</p>
+        <p>Thank you for your purchase at Oliver Weber! We’re thrilled to have you as our customer.</p>
+        <p>Your order has been successfully processed, and your receipt you can download <a href="https://oliverweberpay.pythonanywhere.com/{order_id}/"> here </a> .</p>
+        <p>Thank you for choosing Oliver Weber. We look forward to seeing you again!'</p>
+        <p>Best regards,</p>
+        <p>The Oliver Weber Team</p>
     '''
     from_email = f"OliverWeberShop <{settings.EMAIL_HOST_USER}>"
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [email, 'oliverweberpay@gmail.com'])
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
+    msg_user = EmailMultiAlternatives(subject_user, text_content_user, from_email, [email])
+    msg_user.attach_alternative(html_content_user, "text/html")
+    msg_user.send()
+
+    # Письмо для руководства
+    subject_admin = f'{email} just ordered'
+    text_content_admin = (
+        f"Order's receipt is here: https://oliverweberpay.pythonanywhere.com/{order_id}/"
+
+    )
+    html_content_admin = f'''
+        <p>Order's receipt you can find here <a href="https://oliverweberpay.pythonanywhere.com/{order_id}/"> here </a> </p>
+    '''
+    msg_admin = EmailMultiAlternatives(subject_admin, text_content_admin, from_email, ['oliverweberpay@gmail.com'])
+    msg_admin.attach_alternative(html_content_admin, "text/html")
+    msg_admin.send()
